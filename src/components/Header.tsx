@@ -10,11 +10,14 @@ const Header = () => {
     <header className="bg-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-6">
         <Link href="/" className="text-2xl font-bold text-gray-800">
-          SaaS Boilerplate
+          TProperties
         </Link>
         <nav>
           <Link href="/" className="text-gray-800 mx-2 hover:text-blue-500">
             Home
+          </Link>
+          <Link href="/properties" className="text-gray-800 mx-2 hover:text-blue-500">
+            Properties
           </Link>
           <Link href="/about" className="text-gray-800 mx-2 hover:text-blue-500">
             About
@@ -27,6 +30,9 @@ const Header = () => {
               <Link href="/pricing" className="text-gray-800 mx-2 hover:text-blue-500">
                 Pricing
               </Link>
+              <Link href="/dashboard" className="text-gray-800 mx-2 hover:text-blue-500">
+              Dashboard
+          </Link>
               <button
                 onClick={() => signOut()}
                 className="text-gray-800 mx-2 hover:text-blue-500"

@@ -3,8 +3,8 @@ import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
 export const metadata: Metadata = {
-  title: "Saas App",
-  description: "Saas App Boilerplate",
+  title: "TProperties",
+  description: "Find properties near transport",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="text-gray-800">
+      <body className="text-gray-800 bg-white">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
