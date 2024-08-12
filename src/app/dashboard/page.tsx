@@ -11,82 +11,113 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    FormControl
+    FormControl,
+    SelectChangeEvent
 } from '@mui/material';
 import axios from 'axios';
 
+type Address = {
+    streetAddress: string;
+    suburb: string;
+    state: string;
+    postcode: string;
+    country: string;
+};
+
+type Coordinates = {
+    lat: string;
+    lon: string;
+};
+
+type FormData = {
+    title: string;
+    description: string;
+    address: Address;
+    coordinates: Coordinates;
+    price: string;
+    bedrooms: string;
+    bathrooms: string;
+    carSpaces: string;
+    landSize: string;
+    propertyType: string;
+    status: string;
+    agent: string;
+    features: string;
+    photos: string;
+    areaSize: string;
+};
+
+
 export default function AdminDashboard() {
-    const [formData, setFormData] = useState({
-        cadastreType: '',
-        onMarketTypes: '',
-        status: '',
-        address: '',
-        latitude: '',
-        longitude: '',
-        addressId: '',
-        areaSize: '',
-        bathrooms: '',
-        bedrooms: '',
-        carSpaces: '',
-        claim: '',
-        condition: '',
-        created: '',
-        ensuites: '',
-        features: '',
-        flatNumber: '',
-        improvements: '',
-        internalArea: '',
-        isResidential: false,
-        landUse: '',
-        lotNumber: '',
-        planNumber: '',
-        postcode: '',
-        propertyCategory: '',
-        propertyCategoryId: '',
-        propertyType: '',
-        propertyTypeId: '',
-        rooms: '',
-        sectionNumber: '',
-        state: '',
-        storeys: '',
-        streetAddress: '',
-        streetName: '',
-        streetNumber: '',
-        streetType: '',
-        streetTypeLong: '',
-        suburb: '',
-        suburbId: '',
+    const [formData, setFormData] = useState<FormData>({
         title: '',
-        updated: '',
-        urlSlug: '',
-        urlSlugShort: '',
-        zone: '',
-        gnafIds: [{ monthNo: '', yearNo: '', gnafPID: '' }],
+        description: '',
+        address: {
+            streetAddress: '',
+            suburb: '',
+            state: '',
+            postcode: '',
+            country: 'Australia',
+        },
+        coordinates: {
+            lat: '',
+            lon: '',
+        },
+        price: '',
+        bedrooms: '',
+        bathrooms: '',
+        carSpaces: '',  // Add this
+        landSize: '',   // Add this
+        areaSize: '',
+        propertyType: '',
+        features: '',
+        photos: '',
+        status: 'Available',
+        agent: '',
     });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        });
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = event.target;
+
+        // Check if the name contains a dot to determine if it's a nested field
+        if (name.includes('.')) {
+            const [mainKey, subKey] = name.split('.');
+
+            setFormData((prevData) => {
+                // Make sure to use type assertions to avoid TypeScript errors
+                const mainKeyData = prevData[mainKey as keyof FormData] as Address | Coordinates;
+
+                if (typeof mainKeyData === 'object' && mainKeyData !== null) {
+                    // Cast to the correct type (Address or Coordinates)
+                    return {
+                        ...prevData,
+                        [mainKey]: {
+                            ...mainKeyData,
+                            [subKey]: type === 'checkbox' ? checked : value,
+                        },
+                    };
+                }
+                return prevData;
+            });
+        } else {
+            // Regular field
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: type === 'checkbox' ? checked : value,
+            }));
+        }
     };
 
 
-    const handleGnafChange = (index: number, e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        const newGnafIds = formData.gnafIds.map((gnaf, i) =>
-            i === index ? { ...gnaf, [name]: value } : gnaf
-        );
-        setFormData({ ...formData, gnafIds: newGnafIds });
+    const handleSelectChange = (event: SelectChangeEvent<string>) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
-    const addGnafId = () => {
-        setFormData({
-            ...formData,
-            gnafIds: [...formData.gnafIds, { monthNo: '', yearNo: '', gnafPID: '' }],
-        });
-    };
+
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -107,88 +138,85 @@ export default function AdminDashboard() {
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={6}>
-
-                            <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="cadastre-type-label">Cadastre Type</InputLabel>
-                                    <Select
-                                        labelId="cadastre-type-label"
-                                        id="cadastre-type-select"
-                                        defaultValue=""
-                                        label="Cadastre Type"
-                                        name="cadastreTypes"
-                                    >
-                                        <MenuItem value=""><em>None</em></MenuItem>
-                                        <MenuItem value="Polygon">Polygon</MenuItem>
-                                        <MenuItem value="Parcel">Parcel</MenuItem>
-                                        {/* Add other cadastre types here */}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
                             <TextField
-                                label="On Market Types"
-                                name="onMarketTypes"
-                                value={formData.onMarketTypes}
+                                label="Title"
+                                name="title"
+                                value={formData.title}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Status"
-                                name="status"
-                                value={formData.status}
+                                label="Description"
+                                name="description"
+                                value={formData.description}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Condition"
-                                name="condition"
-                                value={formData.condition}
+                                label="Street Address"
+                                name="address.streetAddress"
+                                value={formData.address.streetAddress}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Address"
-                                name="address"
-                                value={formData.address}
+                                label="Suburb"
+                                name="address.suburb"
+                                value={formData.address.suburb}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="State"
+                                name="address.state"
+                                value={formData.address.state}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Postcode"
+                                name="address.postcode"
+                                value={formData.address.postcode}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Latitude"
-                                name="latitude"
+                                name="coordinates.lat"
                                 type="number"
-                                value={formData.latitude}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Longitude"
-                                name="longitude"
-                                type="number"
-                                value={formData.longitude}
+                                value={formData.coordinates.lat}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Bathrooms"
-                                name="bathrooms"
+                                label="Longitude"
+                                name="coordinates.lon"
                                 type="number"
-                                value={formData.bathrooms}
+                                value={formData.coordinates.lon}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Price"
+                                name="price"
+                                type="number"
+                                value={formData.price}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
@@ -205,25 +233,44 @@ export default function AdminDashboard() {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Car Spaces"
-                                name="carSpaces"
+                                label="Bathrooms"
+                                name="bathrooms"
                                 type="number"
-                                value={formData.carSpaces}
+                                value={formData.bathrooms}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Ensuites"
-                                name="ensuites"
+                                label="Area Size"
+                                name="areaSize"
                                 type="number"
-                                value={formData.ensuites}
+                                value={formData.areaSize}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <InputLabel id="property-type-label">Property Type</InputLabel>
+                                <Select
+                                    labelId="property-type-label"
+                                    id="property-type-select"
+                                    name="propertyType"
+                                    value={formData.propertyType}
+                                    onChange={handleSelectChange}
+                                    label="Property Type"
+                                >
+                                    <MenuItem value=""><em>None</em></MenuItem>
+                                    <MenuItem value="House">House</MenuItem>
+                                    <MenuItem value="Apartment">Apartment</MenuItem>
+                                    <MenuItem value="Commercial">Commercial</MenuItem>
+                                    <MenuItem value="Land">Land</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
                             <TextField
                                 label="Features"
                                 name="features"
@@ -232,87 +279,40 @@ export default function AdminDashboard() {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12}>
                             <TextField
-                                label="Claim"
-                                name="claim"
-                                value={formData.claim}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Lot Number"
-                                name="lotNumber"
-                                value={formData.lotNumber}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Plan Number"
-                                name="planNumber"
-                                value={formData.planNumber}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Internal Area"
-                                name="internalArea"
-                                type="number"
-                                value={formData.internalArea}
+                                label="Photos (URLs)"
+                                name="photos"
+                                value={formData.photos}
                                 onChange={handleInputChange}
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography variant="h6" component="h2" gutterBottom>
-                                GNAF IDs
-                            </Typography>
-                            {formData.gnafIds.map((gnaf, index) => (
-                                <Grid container spacing={2} key={index}>
-                                    <Grid item xs={12} sm={4}>
-                                        <TextField
-                                            label="Month No."
-                                            name="monthNo"
-                                            type="number"
-                                            value={gnaf.monthNo}
-                                            onChange={(e) => handleGnafChange(index, e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={4}>
-                                        <TextField
-                                            label="Year No."
-                                            name="yearNo"
-                                            type="number"
-                                            value={gnaf.yearNo}
-                                            onChange={(e) => handleGnafChange(index, e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={4}>
-                                        <TextField
-                                            label="GNAF PID"
-                                            name="gnafPID"
-                                            value={gnaf.gnafPID}
-                                            onChange={(e) => handleGnafChange(index, e)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                </Grid>
-                            ))}
-                            <Button
-                                variant="contained"
-                                onClick={addGnafId}
-                                sx={{ mt: 2 }}
-                            >
-                                Add GNAF ID
-                            </Button>
+                            <FormControl fullWidth>
+                                <InputLabel id="status-label">Status</InputLabel>
+                                <Select
+                                    labelId="status-label"
+                                    id="status-select"
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleSelectChange}
+                                    label="Status"
+                                >
+                                    <MenuItem value="Available">Available</MenuItem>
+                                    <MenuItem value="Sold">Sold</MenuItem>
+                                    <MenuItem value="OffMarket">OffMarket</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Agent ID"
+                                name="agent"
+                                value={formData.agent}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
                         </Grid>
                         <Grid item xs={12} display="flex" justifyContent="flex-end">
                             <Button

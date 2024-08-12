@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { TextField, Button, Typography, Paper, Grid } from '@mui/material';
 
 type LoginFormProps = {
-  onLoginSuccess: () => void
+  onLoginSuccess: () => void;
 }
 
 const AuthForm = ({ onLoginSuccess }: LoginFormProps) => {
@@ -29,38 +30,42 @@ const AuthForm = ({ onLoginSuccess }: LoginFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-gray-700 text-left">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className="w-full px-3 py-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="password" className="block text-gray-700 text-left">Password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className="w-full px-3 py-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-      >
-        Login
-      </button>
-    </form>
+    <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+      <Grid item xs={12} sm={8} md={6} lg={4}>
+        <Paper elevation={3} style={{ padding: 20 }}>
+          <Typography variant="h5" align="center" gutterBottom>Sign In</Typography>
+          {error && <Typography color="error" variant="body2" align="center">{error}</Typography>}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+            <TextField
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              margin="normal"
+              fullWidth
+              required
+            />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              margin="normal"
+              fullWidth
+              required
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{ marginTop: 20 }}
+            >
+              Login
+            </Button>
+          </form>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

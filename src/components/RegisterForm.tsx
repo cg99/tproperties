@@ -1,6 +1,7 @@
-"use client"
+'use client';
 
 import { useState } from 'react';
+import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 
 // Define the type for the onRegisterSuccess prop
 type RegisterFormProps = {
@@ -37,44 +38,40 @@ const RegisterForm = ({ onRegisterSuccess }: RegisterFormProps) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form 
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 text-left">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="w-full px-3 py-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 text-left">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full px-3 py-2 border border-gray-300 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-          />
-        </div>
-        <button 
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-        >
+    <Box display="flex" alignItems="center" justifyContent="center" minHeight="100vh" bgcolor="background.default">
+      <Box component="form" onSubmit={handleSubmit} bgcolor="background.paper" p={4} borderRadius={2} boxShadow={3} maxWidth={400} width="100%">
+        <Typography variant="h5" component="h2" gutterBottom textAlign="center">
           Register
-        </button>
-      </form>
-    </div>
+        </Typography>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+        <TextField
+          id="email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          variant="outlined"
+          fullWidth
+          required
+          margin="normal"
+        />
+        <TextField
+          id="password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          variant="outlined"
+          fullWidth
+          required
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          Register
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
