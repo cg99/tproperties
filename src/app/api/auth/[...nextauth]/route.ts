@@ -1,21 +1,11 @@
-import NextAuth, { NextAuthOptions, User as NextAuthUser } from 'next-auth';
+import NextAuth, { NextAuthOptions, User as NextAuthUser, Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { JWT } from 'next-auth/jwt';
-import { ExtendedSession } from '@/lib/interface/IExtendedSession';
 
-// Extend the NextAuth User type to include your custom properties
-interface IUser extends NextAuthUser {
-  role?: string;
-  // Add other custom properties here
-}
 
-// Extend the JWT type to include custom properties
-interface ExtendedJWT extends JWT {
-  role?: string;
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -49,13 +39,13 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }: { token: ExtendedJWT, user?: IUser }) {
+    async jwt({ token, user }: { token: JWT, user?: NextAuthUser }) {
       if (user) {
         token.role = user?.role; // Add role to the JWT token
       }
       return token;
     },
-    async session({ session, token }: { session: ExtendedSession, token: ExtendedJWT }) {
+    async session({ session, token }: { session: Session, token: JWT }) {
       if (token && session.user) {
         session.user.role = token.role as string; // Include role in the session
       }

@@ -1,9 +1,13 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { Home, Settings, Password, AccountBox } from '@mui/icons-material';
+import { Home, Settings, Password, AccountBox, Work } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 
+type SidebarProps = {
+    sidebarWidth: number;
+    userRole: string;  // Assuming you pass userRole as a prop
+};
 
-const Sidebar = ({ sidebarWidth }: { sidebarWidth: number }) => {
+const Sidebar = ({ sidebarWidth, userRole }: SidebarProps) => {
     const router = useRouter();
 
     const handleNavigation = (path: string) => {
@@ -44,6 +48,12 @@ const Sidebar = ({ sidebarWidth }: { sidebarWidth: number }) => {
                     <ListItemIcon><Password /></ListItemIcon>
                     <ListItemText primary="Change Password" />
                 </ListItem>
+                {userRole === 'Customer' && ( // Conditionally render the Register as Agent link
+                    <ListItem onClick={() => handleNavigation('/register/agent')}>
+                        <ListItemIcon><Work /></ListItemIcon>
+                        <ListItemText primary="Register as Agent" />
+                    </ListItem>
+                )}
             </List>
         </Drawer>
     );

@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import connectDb from '@/lib/mongodb';
 import Property from '@/models/Property';
-import { getNetworkError } from '@/lib/error/NetworkError';
 
 export async function POST(request: Request) {
     await connectDb();
@@ -13,8 +12,8 @@ export async function POST(request: Request) {
         const property = new Property(data);
         await property.save();
         return NextResponse.json(property, { status: 201 });
-    } catch (error) {
-        getNetworkError(error);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
     }
 }
 
@@ -25,7 +24,7 @@ export async function GET() {
     try {
         const properties = await Property.find().populate('agent');
         return NextResponse.json(properties);
-    } catch (error) {
-        getNetworkError(error);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
     }
 }
