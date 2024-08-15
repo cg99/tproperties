@@ -1,5 +1,5 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { Home, Settings, Password, AccountBox, Work } from '@mui/icons-material';
+import { Home, Settings, Password, AccountBox, Work, HomeMaxOutlined, Add, AddBox } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 
 type SidebarProps = {
@@ -26,15 +26,12 @@ const Sidebar = ({ sidebarWidth, userRole }: SidebarProps) => {
             }}
             variant="permanent"
             anchor="left"
+            className='dashboard-sidebar_left'
         >
             <List>
-                <ListItem>
-                    <ListItemText primary="Dashboard" />
-                </ListItem>
-                <Divider />
-                <ListItem onClick={() => handleNavigation('/saved-properties')}>
+                <ListItem onClick={() => handleNavigation('/dashboard/agent')}>
                     <ListItemIcon><Home /></ListItemIcon>
-                    <ListItemText primary="Saved Properties" />
+                    <ListItemText primary="Dashboard" />
                 </ListItem>
                 <ListItem onClick={() => handleNavigation('/update-profile')}>
                     <ListItemIcon><AccountBox /></ListItemIcon>
@@ -52,6 +49,12 @@ const Sidebar = ({ sidebarWidth, userRole }: SidebarProps) => {
                     <ListItem onClick={() => handleNavigation('/register/agent')}>
                         <ListItemIcon><Work /></ListItemIcon>
                         <ListItemText primary="Register as Agent" />
+                    </ListItem>
+                )}
+                {userRole === 'Agent' && ( // Conditionally render the Register as Agent link
+                    <ListItem onClick={() => handleNavigation('/dashboard/agent/properties/new')}>
+                        <ListItemIcon><AddBox /></ListItemIcon>
+                        <ListItemText primary="Add New Property" />
                     </ListItem>
                 )}
             </List>
