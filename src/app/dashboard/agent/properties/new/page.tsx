@@ -1,18 +1,19 @@
 "use client";
 
 import { ChangeEvent, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import mongoose from 'mongoose';
 import {
     TextField,
     Button,
     Grid,
     Typography,
-    Container,
     Box,
     InputLabel,
     Select,
     MenuItem,
     FormControl,
-    SelectChangeEvent
+    SelectChangeEvent,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -41,7 +42,7 @@ type FormData = {
     landSize: string;
     propertyType: string;
     status: string;
-    agent: string;
+    agent: string | null;
     features: string;
     photos: string;
     areaSize: string;
@@ -49,6 +50,8 @@ type FormData = {
 
 
 export default function NewProperty() {
+    const { data: session } = useSession();
+
     const [formData, setFormData] = useState<FormData>({
         title: '',
         description: '',
@@ -66,29 +69,26 @@ export default function NewProperty() {
         price: '',
         bedrooms: '',
         bathrooms: '',
-        carSpaces: '',  // Add this
-        landSize: '',   // Add this
+        carSpaces: '',
+        landSize: '',
         areaSize: '',
         propertyType: '',
         features: '',
         photos: '',
         status: 'Available',
-        agent: '',
+        agent: session?.user?.id!,  // Assign the valid ObjectId or null
     });
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = event.target;
 
-        // Check if the name contains a dot to determine if it's a nested field
         if (name.includes('.')) {
             const [mainKey, subKey] = name.split('.');
 
             setFormData((prevData) => {
-                // Make sure to use type assertions to avoid TypeScript errors
                 const mainKeyData = prevData[mainKey as keyof FormData] as Address | Coordinates;
 
                 if (typeof mainKeyData === 'object' && mainKeyData !== null) {
-                    // Cast to the correct type (Address or Coordinates)
                     return {
                         ...prevData,
                         [mainKey]: {
@@ -100,14 +100,12 @@ export default function NewProperty() {
                 return prevData;
             });
         } else {
-            // Regular field
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: type === 'checkbox' ? checked : value,
             }));
         }
     };
-
 
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target;
@@ -118,8 +116,7 @@ export default function NewProperty() {
     };
 
 
-
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const response = await axios.post('/api/properties', formData);

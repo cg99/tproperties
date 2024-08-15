@@ -22,7 +22,7 @@ const propertySchema = new mongoose.Schema({
     features: [{ type: String }],
     photos: [{ type: String }],
     status: { type: String, enum: ['Available', 'Sold', 'OffMarket'], default: 'Available' },
-    agent: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    agent: { type: mongoose.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

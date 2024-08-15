@@ -1,10 +1,10 @@
 // app/api/properties/[id]/route.ts
 import Property from '@/models/Property';
 import { NextResponse } from 'next/server';
-import connectDb from '@/lib/mongodb';
+import connectToDatabase from '@/lib/mongodb';
 
 export async function GET(request: Request) {
-    await connectDb();
+    await connectToDatabase();
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
 
 export async function PUT(request: Request) {
-    await connectDb();
+    await connectToDatabase();
 
     const data = await request.json();
     const { searchParams } = new URL(request.url);
@@ -40,7 +40,7 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-    await connectDb();
+    await connectToDatabase();
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

@@ -1,12 +1,14 @@
 // app/api/properties/route.ts
 import { NextResponse } from 'next/server';
-import connectDb from '@/lib/mongodb';
+import connectToDatabase from '@/lib/mongodb';
 import Property from '@/models/Property';
 
 export async function POST(request: Request) {
-    await connectDb();
+    await connectToDatabase();
 
     const data = await request.json();
+
+    console.log(data);
 
     try {
         const property = new Property(data);
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
 
 
 export async function GET() {
-    await connectDb();
+    await connectToDatabase();
 
     try {
         const properties = await Property.find().populate('agent');

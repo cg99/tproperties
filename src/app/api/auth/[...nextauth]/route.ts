@@ -5,8 +5,6 @@ import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { JWT } from 'next-auth/jwt';
 
-
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -24,9 +22,9 @@ export const authOptions: NextAuthOptions = {
           const isValidPassword = await bcrypt.compare(credentials?.password, user.password);
           if (isValidPassword) {
             return {
-              id: user._id,
+              id: user._id.toString(), // Ensure the ID is a string
               email: user.email,
-              role: user.role, // Add role to the session
+              role: user.role,
             };
           } else {
             throw new Error('Invalid password');
@@ -41,12 +39,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }: { token: JWT, user?: NextAuthUser }) {
       if (user) {
-        token.role = user?.role; // Add role to the JWT token
+        token.id = user.id; // Add ID to the JWT token
+        token.role = user.role; // Add role to the JWT token
       }
       return token;
     },
     async session({ session, token }: { session: Session, token: JWT }) {
       if (token && session.user) {
+        session.user.id = token.id as string; // Include ID in the session
         session.user.role = token.role as string; // Include role in the session
       }
       return session;
