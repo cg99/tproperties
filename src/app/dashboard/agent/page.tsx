@@ -9,11 +9,9 @@ import {
 
 export default function AdminDashboard() {
     return (
-
-
         <Box sx={{ my: 4 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-                Add New Property
+                Real Estate agent manage your properties
             </Typography>
 
         </Box>

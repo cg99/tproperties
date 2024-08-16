@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession, getSession } from "next-auth/react";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import Container from "@mui/material/Container";
 import { JWT } from "next-auth/jwt";
 

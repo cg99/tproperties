@@ -1,6 +1,7 @@
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { Home, Settings, Password, AccountBox, Work, HomeMaxOutlined, Add, AddBox } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
+import { AGENT_ROLE, USER_ROLE } from '@/lib/constant/roles';
 
 type SidebarProps = {
     sidebarWidth: number;
@@ -29,7 +30,7 @@ const Sidebar = ({ sidebarWidth, userRole }: SidebarProps) => {
             className='dashboard-sidebar_left'
         >
             <List>
-                <ListItem onClick={() => handleNavigation('/dashboard/agent')}>
+                <ListItem onClick={() => handleNavigation('/dashboard')}>
                     <ListItemIcon><Home /></ListItemIcon>
                     <ListItemText primary="Dashboard" />
                 </ListItem>
@@ -45,20 +46,20 @@ const Sidebar = ({ sidebarWidth, userRole }: SidebarProps) => {
                     <ListItemIcon><Password /></ListItemIcon>
                     <ListItemText primary="Change Password" />
                 </ListItem>
-                {userRole === 'Customer' && ( // Conditionally render the Register as Agent link
-                    <ListItem onClick={() => handleNavigation('/register/agent')}>
+                {userRole === USER_ROLE && ( // Conditionally render the Register as Agent link
+                    < ListItem onClick={() => handleNavigation('/register/agent')}>
                         <ListItemIcon><Work /></ListItemIcon>
                         <ListItemText primary="Register as Agent" />
                     </ListItem>
                 )}
-                {userRole === 'Agent' && ( // Conditionally render the Register as Agent link
+                {userRole === AGENT_ROLE && ( // Conditionally render the Register as Agent link
                     <ListItem onClick={() => handleNavigation('/dashboard/agent/properties/new')}>
                         <ListItemIcon><AddBox /></ListItemIcon>
                         <ListItemText primary="Add New Property" />
                     </ListItem>
                 )}
             </List>
-        </Drawer>
+        </Drawer >
     );
 };
 

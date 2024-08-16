@@ -1,10 +1,10 @@
 import { IUser } from '@/lib/interface/IUser';
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['Admin', 'Agent', 'Customer'], default: 'Customer' },
+  role: { type: String, enum: ['admin', 'agent', 'user'], default: 'user' },
   company: String,
   abn: String,
   createdAt: { type: Date, default: Date.now },

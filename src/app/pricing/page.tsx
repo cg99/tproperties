@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import SubscriptionForm from '@/components/SubscriptionForm';
+import SubscriptionForm from '@/components/form/SubscriptionForm';
 import { useEffect } from 'react';
 
 export default function PricingPage() {

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import AuthForm from '../src/components/AuthForm';
+import AuthForm from '../src/components/form/AuthForm';
 
 describe('AuthForm', () => {
   it('renders a form with email and password fields', () => {
